@@ -24,20 +24,19 @@ const mugPercentage = (purchases, valueOfMug) => {
     return valueOfMug / purchases.reduce((sum, { amount, quantity}) => (sum + amount * quantity), 0);
 }
 
-const purchasesWithMinimumSell = (purchases, mugPercentage) => {
-    return purchases.map(purchase => {
-        return { ...purchase, minimumSell: (purchase.amount * (1 - mugPercentage)) }
+const purchasesWithMinimumSell = (purchases, mug) => {
+    const parsedPurchases = valuesOfPurchases(purchases);
+    const mugPerc = mugPercentage(parsedPurchases, valueOfMug(mug))
+    const withMinimumSell = parsedPurchases.map(purchase => {
+        return { ...purchase, minimumSell: (purchase.amount * (1 - mugPerc)) }
     })
+    return {
+        mug: valueOfMug(mug),
+        mugPercentage: mugPerc,
+        purchasesWithMinimumSell: withMinimumSell
+    }
 }
 
 const asInt = (value) => Number.parseInt(value.split(',').join('').replace('$', ''))
 
-console.log(valuesOfPurchases(purchases));
-console.log(valueOfMug(mug));
-
-console.log({
-    purchases: valuesOfPurchases(purchases),
-    mug: valueOfMug(mug),
-    mugPercentage: mugPercentage(valuesOfPurchases(purchases), valueOfMug(mug)),
-    purchasesWithMinimumSell: purchasesWithMinimumSell(valuesOfPurchases(purchases), mugPercentage(valuesOfPurchases(purchases), valueOfMug(mug)))
-})
+console.log(purchasesWithMinimumSell(purchases, mug))
